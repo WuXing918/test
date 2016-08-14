@@ -11,6 +11,9 @@ class RevertList
 public:
 	RevertList():m_point(NULL){}
 	~RevertList(){}
+	// 找到倒数第K个节点
+	bool findNode(int k);
+	// 删掉指定节点
 	bool deleteNode(Node*);
 	// 但链表排序（选择排序）
 	void selectSort();
@@ -20,6 +23,7 @@ public:
 	void insert(int num);
 	// 但链表打印
 	void print();
+	
 
 
 
@@ -28,9 +32,69 @@ private:
 	int length;
 };
 
-bool RevertList::deleteNode(Node*) 
-{
+bool RevertList::findNode(int k) {
+	// 判断链表长度是否比k大
+	if (NULL == m_point) {
+		return false;
+	}
+	Node* temp1 = m_point; 
+	Node* temp2 = m_point;
+	int i = 0;
+	for (i = 0; i< k && NULL != temp2; i++) {
+		temp2 = temp2->m_next;		
+	}
+	if (i < k) {
+		return false;
+	}
+	while(temp2) {
+		temp2 = temp2->m_next;
+		temp1 = temp1->m_next;
+	}
+	cout << temp1->m_data << endl;
+	return true;
 }
+
+bool RevertList::deleteNode(Node* m_delNode) 
+{
+	if (NULL == m_delNode) {
+		cout << "NULL == m_delNode" <<endl;
+		return false;
+	}
+	if (NULL == m_delNode->m_next) {
+		cout << "RevertList::deleteNode(Node* m_delNode)" << "NULL == m_delNode->m_next" <<endl;
+		Node* m_circle = m_point;
+		while(m_circle) {
+			if(m_circle->m_next == m_delNode) {
+				break;
+			}
+			m_circle = m_circle->m_next;
+		}
+		if (NULL != m_circle) {
+			Node* temp = m_circle->m_next;
+			m_circle->m_next = temp->m_next;
+			if (NULL != temp) {
+				delete temp;
+				temp == NULL;
+			}
+			return true;
+		}
+		else{
+			cout << "RevertList::deleteNode(Node* m_delNode)" << "The Node is not found" <<endl;
+			return false;
+		}
+	}
+	else {
+		Node * temp = m_delNode->m_next;
+		m_delNode->m_data = m_delNode->m_next->m_data;
+		m_delNode->m_next = temp->m_next;
+		if (NULL != temp) {
+			delete temp;
+			temp = NULL;
+		}
+		return true;
+	}
+}
+
 void RevertList::selectSort()
 {
 	// 判空
@@ -94,8 +158,6 @@ void RevertList::print() {
 }	
 
 
-
-
 int main() {
 	RevertList *list = new RevertList();
 	list->insert(10);
@@ -111,6 +173,6 @@ int main() {
 	cout << "call the selsectSort()" << endl;
 	list->selectSort();
 	list->print();
-	
+	list->findNode(3);
 }
 
