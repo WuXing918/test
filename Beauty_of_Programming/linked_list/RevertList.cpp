@@ -155,8 +155,7 @@ void RevertList::print() {
 		temp = temp->m_next;
 	}
 	cout << endl;
-}	
-
+}
 
 int main() {
 	RevertList *list = new RevertList();

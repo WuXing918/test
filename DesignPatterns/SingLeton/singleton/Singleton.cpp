@@ -17,7 +17,7 @@ void Singleton::DestroyInstance()
     if (NULL != m_Instance) 
     {
         delete m_Instance;
-	m_Instance = NULL;
+		m_Instance = NULL;
     }
 
 }
