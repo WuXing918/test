@@ -107,26 +107,30 @@ void LRUCache::detach(DoubleNode *node) {
 
 
 void LRUCache::attach(DoubleNode *node) {
+    cout << "void LRUCache::attach(DoubleNode *node) is start !" << endl;
     node->prev = NULL;
-    Head->next->prev = node;
+    Head->prev = node;
     node->next = Head;
     Head = node;
     cout << count << endl; 
     count ++;
     cout << count << endl;
+    cout << "void LRUCache::attach(DoubleNode *node) is end !" << endl;
 }
 
 DoubleNode* LRUCache::get(int key, char value) 
 {
+    cout << key << " : " <<  value << endl;
     if (Head == Tail) {
         cout << "cache is empty" << endl;
     }
     DoubleNode* temp_get = Head;
     while(temp_get != Tail) {
-        if(temp_get->key = key) {
+        if(temp_get->key == key) {
             // the key is in the Cache
             cout << "the key is in the Cache" << endl;                
             detach(temp_get);
+            cout << temp_get->key << " : " << temp_get->value << endl;
             attach(temp_get);
             break;        
         }
@@ -170,9 +174,26 @@ int main()
         cout << "not NULL" <<endl;
         Lcache->LRUCache_print();
     }
-
+    cout << "-------------------------" << endl;
+    Lcache->LRUCache_print();
     Lcache->get(1,'A');
-    // Lcache->get(3,'E');
+    Lcache->LRUCache_print();
+    cout << "-------------------------" << endl;
+    cout << "=========================" << endl;
+    Lcache->get(3,'C');
+    Lcache->LRUCache_print(); 
+    Lcache->get(4,'D');
+    Lcache->get(5,'E');
+    Lcache->get(6,'F');
+    Lcache->get(7,'G');
+    Lcache->get(8,'H');
+    Lcache->get(9,'I');
+    Lcache->LRUCache_print();
+    Lcache->get(10,'J');
+    Lcache->LRUCache_print();
+    Lcache->get(11,'K');
+    Lcache->LRUCache_print();
+    
 }
 
 
