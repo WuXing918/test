@@ -35,26 +35,34 @@ public:
 			return;
 		}
 	}
-	void Reorder() {
-		if (head == NULL || head->next == NULL) {
+	void Reorder(Node* point) {
+		if (point == NULL || point->next == NULL) {
 			return;
 		}
 		cout << "NOT NULL" << endl;
 		Node* prev = head;
 		Node* last = head->next;
-		head = NULL;
+		point = NULL;
 		while(last) {
-			prev->next = head;
-			head = prev;
+			prev->next = point;
+			point = prev;
 			prev = last;
 			last = last->next;
 		}	
-		prev->next = head;
-		head =  prev;
+		prev->next = point;
+		point =  prev;
 	}
-	
+	Node* getHead() {
+		if (head != NULL) {
+			cout << "head != NULL" <<endl;
+			cout << "---------------------" << endl;
+			return head;
+		}
+		cout << "head == NULL" << endl;
+		return head;
+	}
 	void Reorderlist() {
-
+		
 
 	}
 	
@@ -87,7 +95,9 @@ int main()
 	Rlist->insert(20);
 	
 	Rlist->print();
-	Rlist->Reorder();
+	Node *temp = Rlist->getHead();
+	cout << "---------------------------------------------" << endl;	
+	Rlist->Reorder(temp);
 	Rlist->print();
 	Node *node = new Node(1, "nihao");
 	cout << node->value << endl;
