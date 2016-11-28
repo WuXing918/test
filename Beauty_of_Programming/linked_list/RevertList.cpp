@@ -21,6 +21,10 @@ public:
 	void revert();
 	// 但链表插入
 	void insert(int num);
+    // 删除重复Node 
+    void removeDupliateNode();
+    // 删除重复Node，只留非重复Node
+    void removeDuplicateNodeOnlyleftsigle();
 	// 但链表打印
 	void print();
 	
@@ -156,6 +160,12 @@ void RevertList::print() {
 	}
 	cout << endl;
 }
+
+void RevertList::removeDupliateNode(Node* Duplicate) {
+    
+
+}
+
 
 int main() {
 	RevertList *list = new RevertList();
