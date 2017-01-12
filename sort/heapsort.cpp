@@ -14,7 +14,6 @@ void heapCreate(int a[], int i, int length) {
     int Lchild = 2*i+1;
     int rchild = 2*i+2;    
     // 存储的当前堆中的临时最大值
-    int temp;
     // 存储当前堆中的临时最大之的位置
     int locate;
     while(2*i+1 < length) {
@@ -23,29 +22,27 @@ void heapCreate(int a[], int i, int length) {
             // 判断有右子树       
             if (a[2*i+1] > a[2*i+2]) {
                 locate = 2*i+1;
-                temp = a[2*i+1];            
+                      
             }
             else {
                 locate = 2*i+2;
-                temp = a[2*i+2];            
+                        
             }
         }
         else {
             // 判断没有右子树
             locate = 2*i+1;
-            temp = a[2*i+1];
         }
         
         // 判断子节点与父节点大小
-        if (a[i] >= temp) {
+        if (a[i] >= a[locate]) {
             // 该树已经是大根堆模式            
             break;        
         }
         else {
             int swap = a[i];
-            a[i] = temp;
+            a[i] = a[locate];
             a[locate] = swap;
-            temp = swap;
             i = locate;
         }
     }
