@@ -21,12 +21,10 @@ void heapCreate(int a[], int i, int length) {
         if ((2*i+2) < length) { 
             // 判断有右子树       
             if (a[2*i+1] > a[2*i+2]) {
-                locate = 2*i+1;
-                      
+                locate = 2*i+1;        
             }
             else {
                 locate = 2*i+2;
-                        
             }
         }
         else {
@@ -54,17 +52,12 @@ void heapSort(int a[], int length) {
         // 这个i和a[]下标是没有区别的 
         heapCreate(a, i, length);
     }     
-
     for (int j = length-1; j >= 0; j--)  {
-        cout << "a[" << j << "]" << '=' << a[j] << endl;
         int temp = a[j];
         a[j] = a[0];
         a[0] = temp;
-        print(a, 10);
         heapCreate(a, 0, j);
-        print(a, 10);
     }    
-
 }
 
 
