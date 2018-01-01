@@ -161,7 +161,7 @@ void RevertList::print() {
 	cout << endl;
 }
 
-void RevertList::removeDupliateNode(Node* Duplicate) {
+void RevertList::removeDupliateNode() {
     
 
 }
