@@ -13,11 +13,12 @@ struct Node {
     ~Node(){}
 };
 
-
 class Tree {
     Node* root;
 private:
     void Medprint(Node* root);
+    void Preprint(Node* root);
+   
 public:
 
     Tree():root(NULL) {}
@@ -27,53 +28,73 @@ public:
 
     void InorderInsert(Tree* tree, int num);    
     void InorderPrint(Tree* tree);
+    void InPrePrint(Tree* tree);
+   
 };
 
 void Tree::InorderInsert(Tree* tree, int num) {
     Node *temp = new Node(num);
-    Node * head = tree->root;
-    if(head == NULL) {
-        head = temp;
+    
+    if(root == NULL) {
+        root = temp;
         return;        
     }
     // 查找插入的位置
+    Node* head = tree->root;
+    Node* flag = head;
     while (head) {
         if (head->data >= temp->data) {
+	    flag = head;
             head = head->left;    
         }
         else {
+            flag = head;
             head = head->right;     
         }
     }
     // 将数据插入
-    head = temp;
+    if(flag->data >= temp->data) {
+	flag->left = temp;
+    } 
+    else {
+	flag->right = temp;
+    }
 }
 
 void Tree::Medprint(Node* root) {
-    if(root ==NULL) {
-		cout <<"tree id empty!"<<endl;
-	}
-    
     if (root) {
+	Medprint(root->left);
         cout << root->data <<" ";
-        Medprint(root->left);
         Medprint(root->right);
-    }	
-    cout << endl;
+    }
 }
 
  void Tree::InorderPrint(Tree* tree) {
     Node * head = tree->root;
     Medprint(head);
+    cout << endl;
 }
 
+void Tree::Preprint(Node* root) {
+    if (root) {
+	cout << root->data <<" ";
+	Preprint(root->left);
+        Preprint(root->right);
+    }
+}
+
+ void Tree::InPrePrint(Tree* tree) {
+    Node * head = tree->root;
+    Preprint(head);
+    cout << endl;
+}
 
 
 
 int main() {
 
     Tree* tree = new Tree();
-    tree->InorderInsert(tree, 9);
+    tree->InorderInsert(tree, 1);
     tree->InorderInsert(tree, 8);
     tree->InorderInsert(tree, 7);
     tree->InorderInsert(tree, 6);
@@ -81,6 +102,7 @@ int main() {
     tree->InorderInsert(tree, 4);
     tree->InorderInsert(tree, 2);
     tree->InorderPrint(tree);
+    tree->InPrePrint(tree);
     
     
 }
