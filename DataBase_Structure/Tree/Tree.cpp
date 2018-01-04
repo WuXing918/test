@@ -17,7 +17,6 @@ class Tree {
     Node* root;
 private:
     void Medprint(Node* root);
-    void Preprint(Node* root);
    
 public:
 
@@ -28,7 +27,6 @@ public:
 
     void InorderInsert(Tree* tree, int num);    
     void InorderPrint(Tree* tree);
-    void InPrePrint(Tree* tree);
    
 };
 
@@ -75,20 +73,6 @@ void Tree::Medprint(Node* root) {
     cout << endl;
 }
 
-void Tree::Preprint(Node* root) {
-    if (root) {
-	cout << root->data <<" ";
-	Preprint(root->left);
-        Preprint(root->right);
-    }
-}
-
- void Tree::InPrePrint(Tree* tree) {
-    Node * head = tree->root;
-    Preprint(head);
-    cout << endl;
-}
-
 
 
 int main() {
@@ -102,8 +86,7 @@ int main() {
     tree->InorderInsert(tree, 4);
     tree->InorderInsert(tree, 2);
     tree->InorderPrint(tree);
-    tree->InPrePrint(tree);
-    
+   
     
 }
 
