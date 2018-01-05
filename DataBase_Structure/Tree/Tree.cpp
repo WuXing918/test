@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 using namespace std;
 
 struct Node {
@@ -27,6 +28,7 @@ public:
 
     void InorderInsert(Tree* tree, int num);    
     void InorderPrint(Tree* tree);
+    void unInorderPrint(Tree* tree);
    
 };
 
@@ -73,11 +75,31 @@ void Tree::Medprint(Node* root) {
     cout << endl;
 }
 
+// 非递归的中续遍历
+void Tree::unInorderPrint(Tree* tree) {
+    stack<Node *> list;
+    Node* temp = root;
+    if (root == NULL) {
+        cout << "root is NULL" << endl;
+    }
 
+    while(temp || !list.empty()) {
+        while(temp) {
+            list.push(temp);
+            temp = temp->left;
+        }
+        temp = list.top();
+        list.pop();
+        cout << temp->data << " ";
+        temp = temp->right;
+    } 
+    cout << endl; 
+}
 
 int main() {
 
     Tree* tree = new Tree();
+    tree->unInorderPrint(tree);
     tree->InorderInsert(tree, 1);
     tree->InorderInsert(tree, 8);
     tree->InorderInsert(tree, 7);
@@ -86,6 +108,7 @@ int main() {
     tree->InorderInsert(tree, 4);
     tree->InorderInsert(tree, 2);
     tree->InorderPrint(tree);
+    tree->unInorderPrint(tree);
    
     
 }
