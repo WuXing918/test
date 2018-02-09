@@ -1,0 +1,42 @@
+STL 六大组件：
+		1，容器：
+				就是各种数据结构，Vector ,List,map……,是用来存放数据的.
+		2，算法
+				各种常用算法如sort，search，copy，erase……从实现角度里看，STL算法是一种 function template
+		3，迭代器
+				扮演容器与算法之间的胶合剂，是所谓的“泛型指针”
+		4，仿函数
+				仿函数行为类似函数，可算为算法的某种策略。
+		5，配置器
+				一种用来修饰容器或者仿函数或者迭代器接口的东西。
+		6，配接器
+				负责空间配置于管理
+本书介绍的是SGI STL版本
+		SGI STL 文件分布概略可分为五组：
+			1，C++标准规范下的C头文件（没有扩展名） etc. cstdio……
+			2，C++标准程序库中不属于STL范畴者，etc. stream……
+			3，STL标准头文件（无扩展名）etc. vector deque……
+			4，C++Standard 定案前，HP所规范的STL头文件，etc. vector.h deque.h	
+			5，SGI STL 内部文件（STL真正实现于此），etc. stl_vector.h
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
