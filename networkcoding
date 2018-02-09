@@ -1,0 +1,221 @@
+套接字地址结构：
+		每个协议族都定义了他自己的套接字地址结构 ，这些地址结构的名字均已sockaddr_开头，并以对应每个协议族的唯一后缀结尾。
+
+IPv4 协议族： posix的定义
+	struct sockaddr_in{
+		uint8_t	sin_len;
+		sa_family_t 	sin_family;
+		in_port_t 		sin_port;
+		struct in_addr	sin_addr;
+		char	sin_zero[8];		
+	}
+
+	struct in_addr {
+		in_addr_t 	s_addr;
+	}
+
+	POSIX规范值需要这个结构中共的3个字段sin_family,sin_addr,sin_port。对于符合POSIX的实现来说定义额外的结构字段是可以接受的，几乎所有的网际套接字地址结构的实现都增加了sin_zero字段，所以所有的套接字地址结构大小都一直少是16字节的。
+
+sin_zero 字段未曾使用过，不过在填写这种套接字的时候，我们总吧该字段设置为0
+按照惯例，我们总是在填写套接字前，把整个结构设置为0，而不是单单把sin_zero字段设置为0.
+
+通用套接字地址结构：
+	当作为一个参数传递进任何套接字函数时，套接字地址结构总是以引用的形式（也就是以指向该结构指针）来传递。然而以这样的指针作为参数之一的任何套接字函数，必须处理来自所支持的任何协议族的套接字地址结构。
+	 在如何声明多传递至真的数据类型上存在一个问题。有了 ANSI C 后解决办法就很简单： 【void*】讲void*作为通用的指针类型。然而在1982年采取的办法是在<sys/socket.h>头文件中定义了一个通用的套接字地址结构，该套接字结构如下：
+		struct sockaddr{
+			uint8_t	sa_len;
+			sa_family_t	sa_family;
+			char		sa_date[14];		
+		};
+
+所以从用程序开发人员的观点看，这些通用套接字地址结构的唯一用途就是对指向特定于协议的套接字地址结构的指针执行类型强制转换。
+
+IPv6 套接字地址结构
+	struct in_addr{
+		uint8_t s6_addr[16];		
+	}
+	
+	struct sockaddr_in{
+		uint8_t			sin6_len;
+		sa_family_t 	sin6_family;
+		in_port_t 		sin6_port;
+		uint32_t			sin6_flowinfo;
+		struct in6_addr	sin6_addr;
+
+		uint32_t			sin6_scope_id;		
+	}
+
+
+新的通用套接字地址结构:	
+	作为IPv6套接字API的一部分而定义的心得通用套接字地址结构克服了现有struct sockaddr 的一些缺点。新的struct sockaddr_storage足以容纳系统所支持的任何套接字地址结构。	
+	struct sockaddr_storage{
+		uint8_t		ss_len;
+		sa_family_t	ss_family;
+	};
+
+	 
+
+
+
+
+大端小端，主机字节序和网络字节续：
+	
+	四个概念的定义：
+	
+	1.小端法(Little-Endian)就是低位字节排放在内存的低地址端即该值的起始地址，高位字节排放在内存的高地址端。 
+	2.大端法(Big-Endian)就是高位字节排放在内存的低地址端即该值的起始地址，低位字节排放在内存的高地址端。
+
+
+
+ 	主机字节序就是我们平常说的大端和小端模式：不同的 CPU 有不同的字节序类型，这些字节序是指整数在内存中保存的顺序 这个叫做主机序。Big-Endian和Little-Endian。引用标准的Big-Endian和Little-Endian的定义如下：
+		a) Little-Endian就是低位字节排放在内存的低地址端，高位字节排放在内存的高地址端。
+		b) Big-Endian就是高位字节排放在内存的低地址端，低位字节排放在内存的高地址端。
+   网络字节序：
+4个字节的32 bit值以下面的次序传输：首先是0～7bit，其次8～15bit，然后16～23bit，最后是24~31bit。这种传输次序称作大端字节序。由于 TCP/IP首部中所有的二进制整数在网络中传输时都要求以这种次序，因此它又称作网络字节序。字节序，顾名思义字节的顺序，就是大于一个字节类型的数据在内存中的存放顺序，一个字节的数据没有顺序的问题了。
+
+
+
+
+
+
+
+一些字符串处理函数：
+
+		#incldue<strings.h>
+			bzero(void* dest, size_t ntypes);
+			 	将目标字符串中指定数目的字符置0;
+			bcopy(const void* src, void* dest, size_t ntypes); 
+				将指定数目的字节从源字符串中（拷贝）到目标字符串。
+			bcmp(const void* ptr1, const void* ptr2, int ntypes);
+			  	比较两个而难以的字节串，若相同返回0，否则返回非0。
+
+		#incldue <string.h> 该为ANSI C的标准函数
+
+			memset(void*dest, int c, size_t len);
+					将目标字符串中指定数目的字符置c;
+			memcpy(void* dest, const void* src, int ntypes);
+					memcpy和bcopy类似，不过两个指针参数顺序相反，并且当源字符串与目标字符串重叠的时候，bcopy能够正确处理，而memcpy的操作结果却不可知。
+			memcmp(const void* ptr1, const void* ptr2, int ntypes);
+				  	比较两个而难以的字节串，若相同返回0，否则返回非0。	
+
+
+
+今天主要讲讲两组地址转换函数。他们在ASCII字符串与网络字节序的二进制值之间的转换网际地址。
+
+1.点分十进制数串与它长度为32位的网络字节序二进制值间转换IPv4地址。
+地址转换函数：
+#Iinclude <arpa/inet.h>
+
+int inet_aton(const char *strptr, struct in_addr *addrptr);
+返回：若字符串有效则为1，否则为0
+in_addr_t inet_addr(const char *strptr);
+返回：若字符串有效则为32位二进制网络字节序的IPv4地址，否则为INADDR_NONE
+char* inet_ntoa(struct in_addr inaddr);
+返回：指向一个点分十进制书串的指针
+
+
+2.这两个函数也是进行转换函数，他们对于IPv4和IPv6地址都适合。
+#include <arpa/inet.h>
+
+int inet_pton(int family, const char *strptr, void *addrptr);
+返回：若成功则为1，若输入不是有效的表达格式则为0，若出错为-1
+const char* inet_ntop(int family, const void *addrptr, char *strptr， size_t len);
+返回：若成功则为指向结果的指针，若出错则为NULL
+
+
+例子总结；
+
+char* cp = "172.26.10.69";
+fool.sin_addr.s_addr = inet_addr(cp);
+可以替换为：
+inet_pton(AF_INET,cp,&fool.sin_addr);
+
+
+ptr = inet_ntoa(foo.sin_addr);
+可以替换为：
+char str[INET_ADDRSTRLEN];
+ptr = inet_ntop(AF_INET,&foo.sin_addr,str,sizeof(str));
+
+
+
+
+基本套接字函数：
+	本文将讲解编写一个完整的TCP客户/服务器程序所需要的基本套接字函数。
+
+	#include<sys/socket.h>
+	int socket(int family, int type, int protocol);
+	
+	family  			说明						type      说明								protocol		说明
+		
+	AF_INET  	IPv4 协议					SOCK_STREAM   	字节留套接字					IPPROTO_TCP		TCP传输协议
+	AF_INET6		IPv6 协议					SOCK_DGRAW	  	数据报套接字					IPPROTO_UDP		UDP传输协议
+	AF_LOCAL		Unix域协议				SOCK_SEQPACKET	有序分组套接字				IPPROTO_SCTP	SCTP传输协议
+	AF_ROUTE		路由套接字				SOCK_RAW			原始原始套接字
+	AF_KEY   	密钥套接字
+
+
+AF_XXX和PF_XXX
+	AF_前缀的表示地址族，PF_XXX前缀表示协议族，历史上曾经有过这样的想法：单个协议族可以支持多个地址族，PF_值用来创建套接字，而AF_值用于套接字地址结构，但实际上，支持多个地址族的协议从未实现过，二且头文件 <sys/socket.h>中为一给定协议定义的PF_值总是与此协议的AF_值相等。尽管这种相等关系并不永远成立。以后有可能会实现。
+
+#include <sys.ocket.h>
+int connect(int sockfd, const struct sockaddr *servaddr, socklen_t addrlen);
+
+如果是TCP套接字的话，调用connect函数将激发TCP的三次握手过程，而且仅在连接建立成功，或出错时才返回。
+
+其中出错返回可能会有一下几种情况：
+		待定。
+
+#include <sys/socket.h>
+int  bind(int sockfd, const struct sockaddr *myaddr, socklen_t addrlen);
+
+bind 函数只是把一个本地协议赋予一个套接字。对于网际网协议，协议地址是32位的IPv4地址或1287位的IPv6地址于16位的TCP或者UDP端口号的组和。
+
+#include <sys/socket.h>
+int listen(int sockfd, int backlog);
+listen函数仅由TCP服务器调用，他做两件事。
+(1) 当socket函数创建一个套接字的时，他被假设为一个主动套接字，也就是说，他是一个将调用connect发起连接的客户套接字。listen函数把一个未连接的套接字转换成一个被动套接字，指示内核应接收指向该套接字的链接请求。调用listen函数导致套接字从CLOSED状态转换到LISTEN状态。
+(2) 本函数的第二个参数规定了内核应为相应的套接字排队的最大连接个数。
+	为了理解其中的第二个参数，我们必须认识到内核为任何一个给定的监听套接字维护两个队列：
+		1，未完成连接的队列(incomplete connection queue) 每个这样的SYN分节对应其中一项：已由某个客户发出并达到服务器，而服务器正在等待完成相应的TCP三次握手，这些套接字处于SYN_RCVD状态。 
+		2，已完成连接队列	(completd connection queue)   每个已经完成TCP三次握手过程的客户对应其中一项。这些套接字处于ESTABLISHED。 
+
+
+#include <sys/socket.h>
+
+int accept(int sockfd,struct sockaddr *cliaddr, socklen_t *addrlen);
+accept 函数由TCP服务器调用，用于从已完成连接队列对头返回下一个已完成连接，如果已完成连接队列为空，那么进程被投入睡眠(假设套接字为默认的阻塞方式).
+
+如果accept 成功，那么其返回值是由内核自动生成的一个全新的描述符，代表与所返回的客户的TCP连接。
+
+该函数中会出现两个套接字秒数符，监听套接字，已连接套接字，
+在accept函数中，我们称第一个参数为"监听套接字"，称accept 函数的返回值为"已连接套接字"区分这两个套接字很重要，一个服务器通常仅仅创建一个监听套接字，他在该服务器的生命周期内一直存在。内核为每个由服务器进程接收的客户链接创建一个已连接套接字（也就是说对于他的TCP三次握手过程已经完成）当服务器完成对某个给定客户的服务时，相应的已连接套接字就被关闭。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
