@@ -133,10 +133,13 @@ void RevertList::revert(){
 		return;
 	}
 	// 定义两个链表指针，一个用来循环遍历，一个用来创建新的链表。
+    // ptr 用来遍历链表，temp 用来创建新的链表，ptr 用来擦作当前节点。
 	Node * ptr = m_point;
 	Node * temp = NULL;
 	while(NULL != m_point) {
-		m_point = m_point->m_next;// 遍历
+		// 遍历链表
+		m_point = m_point->m_next;
+		// 将节点前插入新的链表中
 		ptr->m_next = temp;
 		temp = ptr;
 		ptr = m_point;
